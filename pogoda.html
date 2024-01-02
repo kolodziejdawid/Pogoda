@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prognoza pogody</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-white text-center py-4">
+        <h1>Prognoza pogody</h1>
+    </header>
+    
+    <main class="container mt-4">
+        <form class="form-inline justify-content-center mb-3">
+            <label for="city" class="mr-sm-2">Wprowadź miasto:</label>
+            <input type="text" id="city" name="city" class="form-control mr-sm-2" required>
+            <button type="button" onclick="getWeather()" class="btn btn-primary">Sprawdź pogodę</button>
+        </form>
+
+        <div id="weather-info" class="text-center"></div>
+    </main>
+
+    <footer class="text-white text-center py-3">
+        <p>© 2024 PrognozaPogody.com</p>
+    </footer>
+
+    <!-- dodawanie potrzebych bibliotek -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+ function getWeather() {
+            const city = document.getElementById('city').value;
+            const apiKey = 'c05899d262ed4f67822181009240201'; 
+            //pobieranie danych oraz klucz do api
+
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+            //tworszenie adresu URL do zapytania
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                    //sprawdzanie odpowiedzi sieciowej
+                })
+                .then(data => {
+                    const weatherDescription = data.current.condition.text;
+                    const temperature = data.current.temp_c;
+                    const humidity = data.current.humidity;
+
+                    const weatherInfo = `
+                        <p>Pogoda w ${city}: ${weatherDescription}</p>
+                        <p>Temperatura: ${temperature}°C</p>
+                        <p>Wilgotność: ${humidity}%</p>
+                    `;
+                    //wyodrebnienie informacji pogodowych
+
+                    document.getElementById('weather-info').innerHTML = weatherInfo;
+                })
+                .catch(error => {
+                    console.error('Wystąpił błąd:', error);
+                    document.getElementById('weather-info').innerHTML = 'Nie można pobrać danych pogodowych.';
+                });
+                //obsluga bledow
+        }
+    </script>
+  </body>
+</html>
